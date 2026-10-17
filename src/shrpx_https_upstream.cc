@@ -409,6 +409,13 @@ int htp_hdrs_completecb(llhttp_t *htp) {
     }
   }
 
+  if (method == HTTP_CONNECT &&
+      !nghttp2_check_authority(
+        reinterpret_cast<const uint8_t *>(req.authority.data()),
+        req.authority.size())) {
+    return -1;
+  }
+
   downstream->inspect_http1_request();
 
   if ((req.upgrade_request || llhttp_get_upgrade(htp)) &&
